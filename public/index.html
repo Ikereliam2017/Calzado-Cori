@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CALZADOS CORI</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+
+<!-- ─── PAGE LOADER ──────────────────────────────────────────────────── -->
+<div id="pageLoader">
+  <div class="loader-mark">CALZADOS<em>CORI</em></div>
+  <div class="loader-bar-track"><div class="loader-bar-fill" id="loaderBar"></div></div>
+  <div class="loader-sub" id="loaderSub">Cargando catálogo…</div>
+</div>
+
+<!-- ─── PARTICLE CANVAS BACKGROUND ───────────────────────────────────── -->
+<canvas id="particles"></canvas>
+<div id="cursorGlow"></div>
+
+<!-- ─── HERO ─────────────────────────────────────────────────────────── -->
+<header class="hero">
+  <div class="hero-lines"></div>
+  <div class="hero-sparkles" id="heroSparkles"></div>
+  <div class="hero-deco">
+    <div class="hero-deco-circle"></div>
+    <div class="hero-deco-circle2"></div>
+    <div class="hero-deco-ring"></div>
+  </div>
+
+  <div class="marquee-wrap">
+    <div class="marquee-track" id="marqueeTrack">
+      <span>👠 Nuevos Modelos</span><span class="dot">✦</span>
+      <span>Calzado Femenino</span><span class="dot">✦</span>
+      <span id="marqueeCount">— Estilos</span><span class="dot">✦</span>
+      <span>Deportivo · Ortopédico</span><span class="dot">✦</span>
+      <span>Tacones · Plataformas</span><span class="dot">✦</span>
+      <span>Sneakers · Sport Men</span><span class="dot">✦</span>
+      <span>Ecuador ·</span><span class="dot">✦</span>
+      <span>👠 Nuevos Modelos</span><span class="dot">✦</span>
+      <span>Calzado Femenino</span><span class="dot">✦</span>
+      <span class="marqueeCount2">— Estilos</span><span class="dot">✦</span>
+      <span>Deportivo · Ortopédico</span><span class="dot">✦</span>
+      <span>Tacones · Plataformas</span><span class="dot">✦</span>
+      <span>Sneakers · Sport Men</span><span class="dot">✦</span>
+    </div>
+  </div>
+
+  <div class="hero-inner">
+    <div class="hero-brand-wrap">
+      <div class="hero-tag">✦ Catálogo Oficial 2026</div>
+      <div class="hero-brand">CALZADOS<em>CORI</em></div>
+      <div class="hero-sub">Fashion · Casual · Sport · Chic — Ecuador</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num" id="heroCount">0</div>
+      <div class="hero-stat-label">Modelos disponibles</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ─── STATUS BAR: info en vivo de lo leído desde la carpeta img/ ──────── -->
+<div class="status-bar" id="statusBar">
+  <span><span class="status-dot"></span>Servidor conectado</span>
+  <span id="statusImgs">Leyendo carpeta <strong>img/</strong>…</span>
+</div>
+
+<!-- ─── CATEGORY CHIPS ─────────────────────────────────────────────────── -->
+<div class="cat-ribbon" id="catRibbon">
+  <button class="cat-chip active" data-cat="all" onclick="setFilter('all',this)"><span class="chip-icon">✦</span> Todos <span class="cat-count" id="cc-all">0</span></button>
+  <button class="cat-chip" data-cat="deportivo" onclick="setFilter('deportivo',this)"><span class="chip-icon">👟</span> Deportivo <span class="cat-count" id="cc-deportivo">0</span></button>
+  <button class="cat-chip" data-cat="ortopedico" onclick="setFilter('ortopedico',this)"><span class="chip-icon">🌿</span> Ortopédico <span class="cat-count" id="cc-ortopedico">0</span></button>
+  <button class="cat-chip" data-cat="tacones" onclick="setFilter('tacones',this)"><span class="chip-icon">👠</span> Tacones <span class="cat-count" id="cc-tacones">0</span></button>
+  <button class="cat-chip" data-cat="sneakers" onclick="setFilter('sneakers',this)"><span class="chip-icon">⭐</span> Sneakers <span class="cat-count" id="cc-sneakers">0</span></button>
+  <button class="cat-chip" data-cat="plataforma" onclick="setFilter('plataforma',this)"><span class="chip-icon">💜</span> Plataformas <span class="cat-count" id="cc-plataforma">0</span></button>
+  <button class="cat-chip" data-cat="men" onclick="setFilter('men',this)"><span class="chip-icon">👞</span> Sport Men <span class="cat-count" id="cc-men">0</span></button>
+</div>
+
+<!-- ─── STICKY SEARCH BAR ─────────────────────────────────────────────── -->
+<div class="search-bar" id="searchBar">
+  <div class="search-wrap">
+    <input type="text" id="searchInput" placeholder="Buscar nombre, referencia, color…" oninput="filterCards()">
+    <div class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</div>
+  </div>
+  <div class="count-pill" id="countBadge">0 productos</div>
+</div>
+
+<!-- ─── MAIN CONTENT ─────────────────────────────────────────────────── -->
+<div id="main"></div>
+<div class="empty" id="emptyState">
+  <div class="empty-icon">👠</div>
+  <div class="empty-title">Sin resultados</div>
+  <div class="empty-sub">Intenta con otro término de búsqueda</div>
+</div>
+
+<!-- ─── MODAL DE DETALLES ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()" title="Cerrar">✕</button>
+    <div class="modal-img-col" id="modalImgCol">
+      <img id="modalImg" src="" alt="">
+      <div class="modal-ribbon" id="modalRibbon"></div>
+    </div>
+    <div class="modal-info">
+      <div class="modal-accent-bar"></div>
+      <div class="modal-tag" id="modalTag"></div>
+      <div class="modal-name" id="modalName"></div>
+      <div class="modal-ref" id="modalRef"></div>
+      <div class="modal-price-row">
+        <div class="modal-price" id="modalPrice"></div>
+        <div class="modal-price-label">Precio<br>al público</div>
+      </div>
+      <div class="modal-section-title">Colores disponibles</div>
+      <div class="modal-colors" id="modalColors"></div>
+      <div class="modal-section-title">Tallas disponibles</div>
+      <div class="modal-sizes" id="modalSizes"></div>
+      <div class="modal-actions">
+        <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Seguir viendo</button>
+        <div class="modal-wish" id="modalWish" onclick="toggleModalWish()" title="Guardar favorito">♡</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── BACK TO TOP & WISHLIST FLOAT ───────────────────────────────────── -->
+<button id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Subir">↑</button>
+<div id="wishFloat"><span class="wf-heart">♥</span> <span id="wishFloatCount">0</span> favoritos</div>
+
+<!-- ─── FOOTER ─────────────────────────────────────────────────────────── -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <h3>Cori — Calzado & Moda</h3>
+      <span>© 2026 Calzados Cori. Todos los derechos reservados.</span>
+    </div>
+    <div>
+    </div>
+    <div>
+      <h3>Pedidos</h3>
+      <span>Hecho con ❤ en Ecuador</span>
+    </div>
+  </div>
+  <div class="footer-brand">Grayer</div>
+</footer>
+
+<script src="/app.js"></script>
+</body>
+</html>

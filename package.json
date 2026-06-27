@@ -1,0 +1,16 @@
+{
+  "name": "grayer-catalogo",
+  "version": "1.0.0",
+  "description": "Catálogo Grayer — servidor Node.js/Express que lee automáticamente la carpeta img/",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=16"
+  }
+}
